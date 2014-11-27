@@ -1,0 +1,18 @@
+<div id="tweet_content">
+<article class="grid_7">
+<h3 class="p12">Search Results</h3>
+{% for tweet in tweet_list %}
+<div class="page5-box1">
+<figure class="page4-img1"><img src="{{ tweet.user.profile_image_url_https }}" alt=""></figure>
+<div class="extra-wrap">
+<!--<strong>{{ tweet.created_at }}</strong><br/><br/>-->
+<a class="link4" href="#">{{ tweet.text }}</a>
+<p>{{ tweet.user.location }}</p>
+<p>{{ tweet.user.screen_name }}</p>
+<p>Score:{{ tweet.score }}</p>
+</div>
+</div>
+<div class="clear"></div>
+
+{% endfor %}
+</div>

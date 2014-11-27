@@ -1,0 +1,14 @@
+admin_password: rajeshbk042
+application_id: myfirsttwitterapp
+database: MySQL
+databasename: djangomezzdb
+django_settings: twittertest.settings
+instancename: myfirsttwitterapp:djangomezzdb
+managepy: ./manage.py
+media_url: /media/
+project_name: twittertest
+provider: appengine
+pyversion: Python2.7
+requirements: requirements.txt
+sdk_location: /usr/local/google_appengine
+static_url: /static/

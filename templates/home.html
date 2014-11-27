@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Latest News</title>
+<meta charset="utf-8">
+<meta name="description" content="Your description">
+<meta name="keywords" content="Your keywords">
+<meta name="author" content="Your name">
+
+<link rel="stylesheet" href="/static/styles.css">
+<style>
+    .search_class{
+        margin-top:26px;
+        margin-left:450px;
+        position:relative;
+    }
+    input{
+        width: 299px;
+        hover:yello;
+height: 40px;
+    }
+
+    
+    .input_button{
+         width: 120px;
+height: 45px;
+    }
+</style>
+</head>
+<body>
+
+<header>
+<div class="main">
+<h1><a class="logo" href="index.html">Twitter feeds</a></h1>
+
+<div class="clear"></div>
+</div>
+</header>
+
+<section id="content">
+    <div class="search_class page5-box1">
+    <form action="." method="post" id="search_form">{% csrf_token %}
+<input type="text" placeholder="Enter tweet keyword to search"name="search" />
+<input type="submit" class="input_button" id="id_search" value="Search"/>
+    </form>
+    </div>
+    <div class="clear"></div>
+    <hr/>
+<div class="container_12">
+<div class="wrapper">
+    <div id="tweet_content">
+<article class="grid_7">
+<h3 class="p12">Search Results</h3>
+{% if not tweet_list %}
+"No search results found.Please enter keyword to search tweets."
+{% endif %}
+{% for tweet in tweet_list %}
+<div class="page5-box1">
+<figure class="page4-img1"><img src="{{ tweet.user.profile_image_url_https }}" alt=""></figure>
+<div class="extra-wrap">
+<!--<strong>{{ tweet.created_at }}</strong><br/><br/>-->
+<a class="link4">{{ tweet.text }}</a>
+<p>{{ tweet.user.location }}</p>
+<p>{{ tweet.user.screen_name }}</p>
+<p>{{ tweet.score }}</p>
+</div>
+</div>
+<div class="clear"></div>
+{% endfor %}
+    </div>    
+</div>
+</div>
+</section>
+<footer>
+<div class="main">
+<ul class="soc-links">
+<li><a href="www.facebook.com">facebook</a></li>
+<li><a href="ww.twitter.com">twitter</a></li>
+<li class="last3"><a href="www.google.co.in">google+</a></li>
+</ul>
+<div class="foot-page1">
+Twitter Feeds<br />
+<div class="mwd"> Site Desgin: <a class="bot_link" href="http://www.metamorphozis.com"></a></div></div>
+<div class="clear"></div>
+
+</div>
+</footer>
+<script src="/static/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery-1.4.2.min.js"></script>
+<script src="/static/js/script.js"></script>
+<script src="http://code.jquery.com/jquery-1.6.3.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<script type="text/javascript">
+
+    function ShowPiechart(positive,negative,neutral){
+
+            RenderPieChart('container', [
+                      ['Positive', positive],
+                      ['Negative', negative],
+                      ['Neutral',  neutral],
+                      
+                  ]);
+
+     
+            function RenderPieChart(elementId, dataList) {
+                new Highcharts.Chart({
+                    chart: {
+                        renderTo: elementId,
+                        plotBackgroundColor: null,
+                        plotBorderWidth: null,
+                        plotShadow: false
+                    }, title: {
+                        text: 'Sentiment Calculation Pie Chart'
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            return '<b>' + this.point.name + '</b>: ' + this.percentage + ' %';
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                color: '#000000',
+                                connectorColor: '#000000',
+                                formatter: function () {
+                                    return '<b>' + this.point.name + '</b>: ' + this.percentage + ' %';
+                                }
+                            }
+                        }
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Browser share',
+                        data: dataList
+                    }]
+                });
+            };
+       
+
+    }
+
+    $('#search_form').submit(function(){
+       var data = $(this).serialize();
+        $.ajax({
+            type: $(this).attr('method'), // GET or POST
+            url: $(this).attr('action'),
+            data : data,
+            success:function(response) {
+                
+                if (response.status=='success'){
+                    var positve_val = response.positve;
+                    var negative_val = response.negative;
+                    var neutral_val = response.neutral;
+                    $('#content').after('<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>')
+                    $("#tweet_content").replaceWith(response.context);
+                    ShowPiechart(positve_val,negative_val,neutral_val)
+                }
+                else{
+                   alert('error');
+                }
+            },
+            error: function(e, x, r) { // on error..
+
+                //alert($('#register-form').serialize());
+                //alert(error);
+            }
+        });
+
+        return false;
+    });
+
+
+
+    function doSubmit() {
+    var content = 'The flowers are so beautiful';
+    if (content.length > 25000) {
+      
+    } else {      
+      var data = {"lang":'English', "content":content};
+      alert(data);
+      var posting = $.post("http://sentimentanalyzer.appspot.com/api/classify", data, onSubmitSuccess, "json");
+     
+    }
+  }
+
+
+  function onSubmitSuccess(data) {      
+      console.log(data)
+    $("#sentimeter").html("<img src='http://chart.apis.google.com/chart?chxl=0:|negative|neutral|positive&chxr=0,0,1&chxt=y&chs=300x150&cht=gm&chds=0,1&chtt=Sentiment&chd=t:"+ data.score + "' width='300' height='150' alt='Sentiment score' />");
+  }
+</script>
+</body>
+
+</html>
