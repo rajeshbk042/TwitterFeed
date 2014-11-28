@@ -49,18 +49,11 @@ class HomePageView(TemplateView):
             elif item['score']==0.5:
                 neutral+=item['score']            
             tweet_list.append(item)
-        print "scoreeeeeeeeeeeee",item_count
-#        print "scoreeeeeeeeee",tweet_list
-        'http://sentimentanalyzer.appspot.com/api/classify'
-#        res = requests.post('http://sentimentanalyzer.appspot.com/api/classify?lang=en&content=bad&content-typ=json')
-#        dict = res.__dict__
-#        results = json.loads(dict['_content'])
-        print "status",results
         context['status'] = 'success'
         context['tweet_list'] = tweet_list
         context['html'] = render_to_string('ajax/tweet_content.html', {
                                            'tweet_list': tweet_list, })
 
         return HttpResponse(json.dumps({'context': context['html'],'status':context['status'],'positve':positve,'negative':negative,'neutral':neutral }), mimetype='application/json')
-#        return render_to_response(self.template_name,{'tweet_list':tweet_list},context_instance=RequestContext(request))
+#       
 

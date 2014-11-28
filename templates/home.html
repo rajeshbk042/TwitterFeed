@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-<title>Latest News</title>
+<title>Twitter Feeds</title>
 <meta charset="utf-8">
 <meta name="description" content="Your description">
 <meta name="keywords" content="Your keywords">
@@ -26,6 +26,21 @@ height: 40px;
          width: 120px;
 height: 45px;
     }
+
+
+    #dvLoading
+
+{
+
+   background:#fff url(/static/images/712.GIF) no-repeat center center;
+   position: fixed;
+left: 0px;
+top: 0px;
+width: 100%;
+height: 100%;
+z-index: 1000;
+
+}
 </style>
 </head>
 <body>
@@ -144,20 +159,26 @@ Twitter Feeds<br />
        
 
     }
-
-    $('#search_form').submit(function(){
+count = 0;
+    $('#search_form').submit(function(){  
        var data = $(this).serialize();
+       $('#content').after('<div id="dvLoading"></div>')
+       $('#dvLoading').fadeIn(2000);
+       if(count>=1){
+           $('#container').remove();
+       }
         $.ajax({
             type: $(this).attr('method'), // GET or POST
             url: $(this).attr('action'),
             data : data,
-            success:function(response) {
-                
+            success:function(response) {               
                 if (response.status=='success'){
+                    $('#dvLoading').fadeOut(20);
                     var positve_val = response.positve;
                     var negative_val = response.negative;
                     var neutral_val = response.neutral;
                     $('#content').after('<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>')
+                    count+=1
                     $("#tweet_content").replaceWith(response.context);
                     ShowPiechart(positve_val,negative_val,neutral_val)
                 }
